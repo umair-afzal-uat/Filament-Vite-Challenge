@@ -26,7 +26,7 @@ Follow these steps to set up the project locally:
 
 ### Step 1: Clone the Repository
 ```sh
-git clone https://github.com/your-username/filament-vite-challenge.git
+git clone https://github.com/umair-afzal-uat/Filament-Vite-Challenge
 cd filament-vite-challenge
 ```
 
