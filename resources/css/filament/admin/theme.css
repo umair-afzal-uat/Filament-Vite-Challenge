@@ -2,7 +2,7 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
 /* Your custom theme overrides */
-@config "./tailwind.config.js";
+/* @config "./tailwind.config.js"; */
 
 @tailwind base;
 @tailwind components;
