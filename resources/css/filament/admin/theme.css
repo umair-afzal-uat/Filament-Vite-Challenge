@@ -1,0 +1,14 @@
+/* resources/css/filament/admin/theme.css */
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+/* Your custom theme overrides */
+@config "./tailwind.config.js";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+.custom-filament-style {
+    @apply bg-primary-500 text-white rounded-lg;
+}
