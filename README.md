@@ -30,8 +30,8 @@ git clone https://github.com/umair-afzal-uat/Filament-Vite-Challenge
 cd filament-vite-challenge
 ```
 
-### Step 2: Install Dependencies
-Install PHP dependencies using Composer:
+### Step 2: Install Dependencies (Skip it)
+Install PHP dependencies using Composer: (Skip this because The vendor directory is pushed to the public repository because the Filament v4 open-source repository does not clone or install all the required files via Composer.)
 ```sh
 composer install
 ```
