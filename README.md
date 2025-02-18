@@ -31,7 +31,8 @@ cd filament-vite-challenge
 ```
 
 ### Step 2: Install Dependencies (Skip it)
-Install PHP dependencies using Composer: (Skip this because The vendor directory is pushed to the public repository because the Filament v4 open-source repository does not clone or install all the required files via Composer.)
+Install PHP dependencies using Composer: 
+(Skip this because The vendor directory is pushed to the public repository because the Filament v4 open-source repository does not clone or install all the required files via Composer.)
 ```sh
 composer install
 ```
@@ -112,8 +113,8 @@ This project is licensed under the MIT License. Feel free to modify and distribu
 ## Contact
 For questions or support, contact:
 
-- **Name**: Umair Afzal
-- **Email**: umair.afzal.uat@gmail.com
+- **Name**:  Umair Afzal
+- **Email**: umairafzalphp@gmail.com
 
 - **GitHub**: [Filament-Vite-Challenge](https://github.com/umair-afzal-uat/Filament-Vite-Challenge)
 
