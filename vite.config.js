@@ -1,24 +1,12 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import path from 'path';
 
 export default defineConfig({
-    plugins: [
-        laravel({
-            input: [
-                // Filament admin styles and scripts
-                'resources/css/filament/admin/theme.css',
-                'resources/js/filament/admin/index.js',
-                
-                // Your application assets
-                'resources/css/app.css',
-                'resources/js/app.js',
-            ],
-            refresh: true,
-        }),
-    ],
+    plugins: [laravel(['resources/css/app.css', 'resources/js/app.js'])],
     resolve: {
         alias: {
-            '@': '/resources',
-        },
-    },
+            '@filament': path.resolve(__dirname, 'vendor/filament/filament/resources/css')
+        }
+    }
 });
