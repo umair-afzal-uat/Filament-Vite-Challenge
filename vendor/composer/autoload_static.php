@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitc1745adb855458a076c428453245e5b0
+class ComposerStaticInit774fddd5d44bce812825453b515ffcad
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -181,6 +181,7 @@ class ComposerStaticInitc1745adb855458a076c428453245e5b0
             'DeepCopy\\' => 9,
             'Database\\Seeders\\' => 17,
             'Database\\Factories\\' => 19,
+            'DanHarrin\\LivewireRateLimiting\\' => 31,
         ),
         'C' => 
         array (
@@ -581,6 +582,10 @@ class ComposerStaticInitc1745adb855458a076c428453245e5b0
             0 => __DIR__ . '/../..' . '/database/factories',
             1 => __DIR__ . '/..' . '/laravel/pint/database/factories',
         ),
+        'DanHarrin\\LivewireRateLimiting\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/danharrin/livewire-rate-limiting/src',
+        ),
         'Cron\\' => 
         array (
             0 => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron',
@@ -605,9 +610,18 @@ class ComposerStaticInitc1745adb855458a076c428453245e5b0
     );
 
     public static $classMap = array (
+        'App\\Filament\\Resources\\Posts\\Pages\\CreatePost' => __DIR__ . '/../..' . '/app/Filament/Resources/Posts/Pages/CreatePost.php',
+        'App\\Filament\\Resources\\Posts\\Pages\\EditPost' => __DIR__ . '/../..' . '/app/Filament/Resources/Posts/Pages/EditPost.php',
+        'App\\Filament\\Resources\\Posts\\Pages\\ListPosts' => __DIR__ . '/../..' . '/app/Filament/Resources/Posts/Pages/ListPosts.php',
+        'App\\Filament\\Resources\\Posts\\Pages\\ViewPost' => __DIR__ . '/../..' . '/app/Filament/Resources/Posts/Pages/ViewPost.php',
+        'App\\Filament\\Resources\\Posts\\PostResource' => __DIR__ . '/../..' . '/app/Filament/Resources/Posts/PostResource.php',
+        'App\\Filament\\Resources\\Posts\\Schemas\\PostForm' => __DIR__ . '/../..' . '/app/Filament/Resources/Posts/Schemas/PostForm.php',
+        'App\\Filament\\Resources\\Posts\\Schemas\\PostInfolist' => __DIR__ . '/../..' . '/app/Filament/Resources/Posts/Schemas/PostInfolist.php',
+        'App\\Filament\\Resources\\Posts\\Tables\\PostsTable' => __DIR__ . '/../..' . '/app/Filament/Resources/Posts/Tables/PostsTable.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
+        'App\\Providers\\FilamentServiceProvider' => __DIR__ . '/../..' . '/app/Providers/FilamentServiceProvider.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',
         'Brick\\Math\\BigInteger' => __DIR__ . '/..' . '/brick/math/src/BigInteger.php',
@@ -725,6 +739,8 @@ class ComposerStaticInitc1745adb855458a076c428453245e5b0
         'Cron\\HoursField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/HoursField.php',
         'Cron\\MinutesField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MinutesField.php',
         'Cron\\MonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MonthField.php',
+        'DanHarrin\\LivewireRateLimiting\\Exceptions\\TooManyRequestsException' => __DIR__ . '/..' . '/danharrin/livewire-rate-limiting/src/Exceptions/TooManyRequestsException.php',
+        'DanHarrin\\LivewireRateLimiting\\WithRateLimiting' => __DIR__ . '/..' . '/danharrin/livewire-rate-limiting/src/WithRateLimiting.php',
         'Database\\Factories\\UserFactory' => __DIR__ . '/../..' . '/database/factories/UserFactory.php',
         'Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/DatabaseSeeder.php',
         'DateError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
@@ -1524,6 +1540,7 @@ class ComposerStaticInitc1745adb855458a076c428453245e5b0
         'Filament\\Actions\\Exports\\Downloaders\\Contracts\\Downloader' => __DIR__ . '/..' . '/filament/filament/packages/actions/src/Exports/Downloaders/Contracts/Downloader.php',
         'Filament\\Actions\\Exports\\Downloaders\\CsvDownloader' => __DIR__ . '/..' . '/filament/filament/packages/actions/src/Exports/Downloaders/CsvDownloader.php',
         'Filament\\Actions\\Exports\\Downloaders\\XlsxDownloader' => __DIR__ . '/..' . '/filament/filament/packages/actions/src/Exports/Downloaders/XlsxDownloader.php',
+        'Filament\\Actions\\Exports\\Enums\\Contracts\\ExportFormat' => __DIR__ . '/..' . '/filament/filament/packages/actions/src/Exports/Enums/Contracts/ExportFormat.php',
         'Filament\\Actions\\Exports\\Enums\\ExportFormat' => __DIR__ . '/..' . '/filament/filament/packages/actions/src/Exports/Enums/ExportFormat.php',
         'Filament\\Actions\\Exports\\ExportColumn' => __DIR__ . '/..' . '/filament/filament/packages/actions/src/Exports/ExportColumn.php',
         'Filament\\Actions\\Exports\\Exporter' => __DIR__ . '/..' . '/filament/filament/packages/actions/src/Exports/Exporter.php',
@@ -1993,6 +2010,7 @@ class ComposerStaticInitc1745adb855458a076c428453245e5b0
         'Filament\\Schemas\\Components\\Contracts\\ExposesStateToActionData' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/Contracts/ExposesStateToActionData.php',
         'Filament\\Schemas\\Components\\Contracts\\HasAffixActions' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/Contracts/HasAffixActions.php',
         'Filament\\Schemas\\Components\\Contracts\\HasExtraItemActions' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/Contracts/HasExtraItemActions.php',
+        'Filament\\Schemas\\Components\\EmbeddedTable' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/EmbeddedTable.php',
         'Filament\\Schemas\\Components\\Fieldset' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/Fieldset.php',
         'Filament\\Schemas\\Components\\Form' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/Form.php',
         'Filament\\Schemas\\Components\\Grid' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/Grid.php',
@@ -2008,7 +2026,6 @@ class ComposerStaticInitc1745adb855458a076c428453245e5b0
         'Filament\\Schemas\\Components\\StateCasts\\EnumStateCast' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/StateCasts/EnumStateCast.php',
         'Filament\\Schemas\\Components\\StateCasts\\FileUploadStateCast' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/StateCasts/FileUploadStateCast.php',
         'Filament\\Schemas\\Components\\StateCasts\\KeyValueStateCast' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/StateCasts/KeyValueStateCast.php',
-        'Filament\\Schemas\\Components\\TableBuilder' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/TableBuilder.php',
         'Filament\\Schemas\\Components\\Tabs' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/Tabs.php',
         'Filament\\Schemas\\Components\\Tabs\\Tab' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/Tabs/Tab.php',
         'Filament\\Schemas\\Components\\Text' => __DIR__ . '/..' . '/filament/filament/packages/schemas/src/Components/Text.php',
@@ -4887,6 +4904,47 @@ class ComposerStaticInitc1745adb855458a076c428453245e5b0
         'Nette\\NotImplementedException' => __DIR__ . '/..' . '/nette/utils/src/exceptions.php',
         'Nette\\NotSupportedException' => __DIR__ . '/..' . '/nette/utils/src/exceptions.php',
         'Nette\\OutOfRangeException' => __DIR__ . '/..' . '/nette/utils/src/exceptions.php',
+        'Nette\\PhpGenerator\\Attribute' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Attribute.php',
+        'Nette\\PhpGenerator\\ClassLike' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/ClassLike.php',
+        'Nette\\PhpGenerator\\ClassManipulator' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/ClassManipulator.php',
+        'Nette\\PhpGenerator\\ClassType' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/ClassType.php',
+        'Nette\\PhpGenerator\\Closure' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Closure.php',
+        'Nette\\PhpGenerator\\Constant' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Constant.php',
+        'Nette\\PhpGenerator\\Dumper' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Dumper.php',
+        'Nette\\PhpGenerator\\EnumCase' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/EnumCase.php',
+        'Nette\\PhpGenerator\\EnumType' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/EnumType.php',
+        'Nette\\PhpGenerator\\Extractor' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Extractor.php',
+        'Nette\\PhpGenerator\\Factory' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Factory.php',
+        'Nette\\PhpGenerator\\GlobalFunction' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/GlobalFunction.php',
+        'Nette\\PhpGenerator\\Helpers' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Helpers.php',
+        'Nette\\PhpGenerator\\InterfaceType' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/InterfaceType.php',
+        'Nette\\PhpGenerator\\Literal' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Literal.php',
+        'Nette\\PhpGenerator\\Method' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Method.php',
+        'Nette\\PhpGenerator\\Parameter' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Parameter.php',
+        'Nette\\PhpGenerator\\PhpFile' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/PhpFile.php',
+        'Nette\\PhpGenerator\\PhpLiteral' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/PhpLiteral.php',
+        'Nette\\PhpGenerator\\PhpNamespace' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/PhpNamespace.php',
+        'Nette\\PhpGenerator\\Printer' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Printer.php',
+        'Nette\\PhpGenerator\\PromotedParameter' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/PromotedParameter.php',
+        'Nette\\PhpGenerator\\Property' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Property.php',
+        'Nette\\PhpGenerator\\PropertyAccessMode' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/PropertyAccessMode.php',
+        'Nette\\PhpGenerator\\PropertyHook' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/PropertyHook.php',
+        'Nette\\PhpGenerator\\PropertyHookType' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/PropertyHookType.php',
+        'Nette\\PhpGenerator\\PsrPrinter' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/PsrPrinter.php',
+        'Nette\\PhpGenerator\\TraitType' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/TraitType.php',
+        'Nette\\PhpGenerator\\TraitUse' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/TraitUse.php',
+        'Nette\\PhpGenerator\\Traits\\AttributeAware' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/AttributeAware.php',
+        'Nette\\PhpGenerator\\Traits\\CommentAware' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/CommentAware.php',
+        'Nette\\PhpGenerator\\Traits\\ConstantsAware' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/ConstantsAware.php',
+        'Nette\\PhpGenerator\\Traits\\FunctionLike' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/FunctionLike.php',
+        'Nette\\PhpGenerator\\Traits\\MethodsAware' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/MethodsAware.php',
+        'Nette\\PhpGenerator\\Traits\\NameAware' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/NameAware.php',
+        'Nette\\PhpGenerator\\Traits\\PropertiesAware' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/PropertiesAware.php',
+        'Nette\\PhpGenerator\\Traits\\PropertyLike' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/PropertyLike.php',
+        'Nette\\PhpGenerator\\Traits\\TraitsAware' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/TraitsAware.php',
+        'Nette\\PhpGenerator\\Traits\\VisibilityAware' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/VisibilityAware.php',
+        'Nette\\PhpGenerator\\Type' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Type.php',
+        'Nette\\PhpGenerator\\Visibility' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Visibility.php',
         'Nette\\Schema\\Context' => __DIR__ . '/..' . '/nette/schema/src/Schema/Context.php',
         'Nette\\Schema\\DynamicParameter' => __DIR__ . '/..' . '/nette/schema/src/Schema/DynamicParameter.php',
         'Nette\\Schema\\Elements\\AnyOf' => __DIR__ . '/..' . '/nette/schema/src/Schema/Elements/AnyOf.php',
@@ -5259,6 +5317,7 @@ class ComposerStaticInitc1745adb855458a076c428453245e5b0
         'PHPUnit\\Framework\\Attributes\\UsesMethod' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Attributes/UsesMethod.php',
         'PHPUnit\\Framework\\Attributes\\UsesTrait' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Attributes/UsesTrait.php',
         'PHPUnit\\Framework\\Attributes\\WithoutErrorHandler' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Attributes/WithoutErrorHandler.php',
+        'PHPUnit\\Framework\\ChildProcessResultProcessor' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/TestRunner/ChildProcessResultProcessor.php',
         'PHPUnit\\Framework\\CodeCoverageException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Exception/CodeCoverageException.php',
         'PHPUnit\\Framework\\ComparisonMethodDoesNotAcceptParameterTypeException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Exception/ObjectEquals/ComparisonMethodDoesNotAcceptParameterTypeException.php',
         'PHPUnit\\Framework\\ComparisonMethodDoesNotDeclareBoolReturnTypeException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Exception/ObjectEquals/ComparisonMethodDoesNotDeclareBoolReturnTypeException.php',
@@ -7899,9 +7958,9 @@ class ComposerStaticInitc1745adb855458a076c428453245e5b0
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitc1745adb855458a076c428453245e5b0::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitc1745adb855458a076c428453245e5b0::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitc1745adb855458a076c428453245e5b0::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit774fddd5d44bce812825453b515ffcad::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit774fddd5d44bce812825453b515ffcad::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit774fddd5d44bce812825453b515ffcad::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -300,15 +300,23 @@ class EditRecord extends Page
 
     protected function getSaveFormAction(): Action
     {
+        $hasFormWrapper = $this->hasFormWrapper();
+
         return Action::make('save')
             ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
-            ->submit('save')
+            ->submit($hasFormWrapper ? $this->getSubmitFormLivewireMethodName() : null)
+            ->action($hasFormWrapper ? null : $this->getSubmitFormLivewireMethodName())
             ->keyBindings(['mod+s']);
     }
 
     protected function getSubmitFormAction(): Action
     {
         return $this->getSaveFormAction();
+    }
+
+    protected function getSubmitFormLivewireMethodName(): string
+    {
+        return 'save';
     }
 
     protected function getCancelFormAction(): Action
@@ -338,6 +346,7 @@ class EditRecord extends Page
         return [
             'form' => $this->configureForm(
                 $this->makeSchema()
+                    ->schema($this->getFormSchema())
                     ->operation('edit')
                     ->model($this->getRecord())
                     ->statePath($this->getFormStatePath()),
@@ -365,7 +374,7 @@ class EditRecord extends Page
         return $schema
             ->components([
                 ...($this->hasCombinedRelationManagerTabsWithContent() ? [] : $this->getContentComponents()),
-                $this->getRelationManagersContentComponent(),
+                ...$this->getRelationManagersContentComponents(),
             ]);
     }
 
@@ -375,21 +384,41 @@ class EditRecord extends Page
     public function getContentComponents(): array
     {
         return [
-            $this->getFormContentComponent(),
+            ...$this->getFormContentComponents(),
         ];
     }
 
-    public function getFormContentComponent(): Component
+    /**
+     * @return array<Component | Action | ActionGroup>
+     */
+    public function getFormContentComponents(): array
     {
-        return Form::make([NestedSchema::make('form')])
-            ->id('form')
-            ->livewireSubmitHandler('save')
-            ->footer([
-                Actions::make($this->getFormActions())
-                    ->alignment($this->getFormActionsAlignment())
-                    ->fullWidth($this->hasFullWidthFormActions())
-                    ->sticky($this->areFormActionsSticky()),
-            ]);
+        $formSchema = NestedSchema::make('form');
+        $actions = Actions::make($this->getFormActions())
+            ->alignment($this->getFormActionsAlignment())
+            ->fullWidth($this->hasFullWidthFormActions())
+            ->sticky($this->areFormActionsSticky());
+
+        if ($this->hasFormWrapper()) {
+            return [
+                $formSchema,
+                $actions,
+            ];
+        }
+
+        return [
+            Form::make([$formSchema])
+                ->id('form')
+                ->livewireSubmitHandler($this->getSubmitFormLivewireMethodName())
+                ->footer([
+                    $actions,
+                ]),
+        ];
+    }
+
+    public function hasFormWrapper(): bool
+    {
+        return true;
     }
 
     /**

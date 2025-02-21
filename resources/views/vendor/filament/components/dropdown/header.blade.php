@@ -1,34 +1,35 @@
-@php
-    use Filament\Support\Enums\IconSize;
-    use Filament\Support\View\Components\DropdownComponent\HeaderComponent;
-    use Illuminate\View\ComponentAttributeBag;
-@endphp
-
 @props([
     'color' => 'gray',
     'icon' => null,
-    'iconSize' => null,
     'tag' => 'div',
 ])
-
-@php
-    if (! ($iconSize instanceof IconSize)) {
-        $iconSize = filled($iconSize) ? (IconSize::tryFrom($iconSize) ?? $iconSize) : null;
-    }
-@endphp
 
 <{{ $tag }}
     {{
         $attributes
             ->class([
-                'fi-dropdown-header',
+                'filament-dropdown-header flex w-full gap-2 p-3 text-sm',
+                is_string($color) ? "filament-dropdown-header-color-{$color}" : null,
+                match ($color) {
+                    'gray' => 'text-gray-700 dark:text-gray-200',
+                    default => 'text-custom-600 dark:text-custom-400',
+                },
             ])
-            ->color(HeaderComponent::class, $color)
+            ->style([
+                \Filament\Support\get_color_css_variables($color, shades: [400, 600]) => $color !== 'gray',
+            ])
     }}
 >
-    {{ \Filament\Support\generate_icon_html($icon, size: $iconSize) }}
+    @if ($icon)
+        <x-filament::icon
+            :name="$icon"
+            alias="support::dropdown.header"
+            size="h-5 w-5"
+            class="filament-dropdown-header-icon"
+        />
+    @endif
 
-    <span>
+    <span class="filament-dropdown-header-label">
         {{ $slot }}
     </span>
 </{{ $tag }}>

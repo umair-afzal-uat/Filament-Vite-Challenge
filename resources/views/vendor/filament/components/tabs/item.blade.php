@@ -1,42 +1,34 @@
-@php
-    use Filament\Support\Enums\IconPosition;
-@endphp
-
 @props([
     'active' => false,
     'alpineActive' => null,
     'badge' => null,
-    'badgeColor' => null,
-    'badgeTooltip' => null,
-    'badgeIcon' => null,
-    'badgeIconPosition' => IconPosition::Before,
-    'href' => null,
     'icon' => null,
     'iconColor' => 'gray',
-    'iconPosition' => IconPosition::Before,
-    'spaMode' => null,
+    'iconPosition' => 'before',
     'tag' => 'button',
-    'target' => null,
     'type' => 'button',
 ])
 
 @php
-    if (! $iconPosition instanceof IconPosition) {
-        $iconPosition = filled($iconPosition) ? (IconPosition::tryFrom($iconPosition) ?? $iconPosition) : null;
-    }
+    $iconColorClasses = \Illuminate\Support\Arr::toCssClasses([
+        'text-custom-600 dark:text-custom-400' => $active,
+    ]);
 
-    $hasAlpineActiveClasses = filled($alpineActive);
+    $iconStyles = \Illuminate\Support\Arr::toCssStyles([
+        \Filament\Support\get_color_css_variables($iconColor, shades: [400, 600]) => $iconColorClasses,
+    ]);
 @endphp
 
 <{{ $tag }}
     @if ($tag === 'button')
         type="{{ $type }}"
-    @elseif ($tag === 'a')
-        {{ \Filament\Support\generate_href_html($href, $target === '_blank', $spaMode) }}
     @endif
-    @if ($hasAlpineActiveClasses)
+    @if ($alpineActive)
         x-bind:class="{
-            'fi-active': {{ $alpineActive }},
+            'hover:text-gray-800 focus:text-primary-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400':
+                ! {{ $alpineActive }},
+            'text-primary-600 shadow bg-white dark:text-white dark:bg-primary-600':
+                {{ $alpineActive }},
         }"
     @endif
     {{
@@ -46,36 +38,58 @@
                 'role' => 'tab',
             ])
             ->class([
-                'fi-tabs-item',
-                'fi-active' => (! $hasAlpineActiveClasses) && $active,
+                'filament-tabs-item flex h-8 items-center gap-3 whitespace-nowrap rounded-md px-5 font-medium outline-none focus:ring-2 focus:ring-inset focus:ring-primary-600',
+                'hover:text-gray-800 focus:text-primary-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:text-gray-400' => (! $active) && (! $alpineActive),
+                'bg-white text-primary-600 shadow dark:bg-primary-600 dark:text-white' => $active && (! $alpineActive),
             ])
     }}
 >
-    @if ($icon && $iconPosition === IconPosition::Before)
-        {{ \Filament\Support\generate_icon_html($icon) }}
+    @if ($icon && $iconPosition === 'before')
+        <x-filament::icon
+            :name="$icon"
+            :color="$iconColorClasses"
+            alias="support::tabs.item"
+            size="h-5 w-5"
+            :style="$iconStyles"
+            x-bind:class="{
+                '{{ $iconColorClasses }}': ! ({{ $alpineActive }}),
+            }"
+        />
     @endif
 
-    <span class="fi-tabs-item-label">
+    <span>
         {{ $slot }}
     </span>
 
-    @if ($icon && $iconPosition === IconPosition::After)
-        {{ \Filament\Support\generate_icon_html($icon) }}
+    @if ($icon && $iconPosition === 'after')
+        <x-filament::icon
+            :name="$icon"
+            :color="$iconColorClasses"
+            alias="support::tabs.item"
+            size="h-5 w-5"
+            :style="$iconStyles"
+            x-bind:class="{
+                '{{ $iconColorClasses }}': ! ({{ $alpineActive }}),
+            }"
+        />
     @endif
 
-    @if (filled($badge))
-        @if ($badge instanceof \Illuminate\View\ComponentSlot)
+    @if ($badge)
+        <span
+            @if ($alpineActive)
+                x-bind:class="{
+                    'bg-white dark:bg-gray-600': ! {{ $alpineActive }},
+                    'bg-primary-600 text-white font-medium dark:bg-white dark:text-primary-600':
+                        {{ $alpineActive }},
+                }"
+            @endif
+            @class([
+                'min-h-4 inline-flex items-center justify-center whitespace-normal rounded-xl px-2 py-0.5 text-xs font-medium tracking-tight',
+                'bg-white dark:bg-gray-600' => (! $active) && (! $alpineActive),
+                'bg-primary-600 font-medium text-white dark:bg-white dark:text-primary-600' => $active && (! $alpineActive),
+            ])
+        >
             {{ $badge }}
-        @else
-            <x-filament::badge
-                :color="$badgeColor"
-                :icon="$badgeIcon"
-                :icon-position="$badgeIconPosition"
-                size="sm"
-                :tooltip="$badgeTooltip"
-            >
-                {{ $badge }}
-            </x-filament::badge>
-        @endif
+        </span>
     @endif
 </{{ $tag }}>

@@ -19,9 +19,9 @@ use Filament\Resources\Concerns\InteractsWithRelationshipTable;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\RelationManagers\RelationManagerConfiguration;
+use Filament\Schemas\Components\EmbeddedTable;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\RenderHook;
-use Filament\Schemas\Components\TableBuilder;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\Icons\Heroicon;
@@ -186,12 +186,12 @@ class ManageRelatedRecords extends Page implements Tables\Contracts\HasTable
         return $schema
             ->components([
                 Group::make([
-                    $this->getTabsContentComponent(),
+                    ...$this->getTabsContentComponents(),
                     RenderHook::make(PanelsRenderHook::RESOURCE_PAGES_MANAGE_RELATED_RECORDS_TABLE_BEFORE),
-                    TableBuilder::make(),
+                    EmbeddedTable::make(),
                     RenderHook::make(PanelsRenderHook::RESOURCE_PAGES_MANAGE_RELATED_RECORDS_TABLE_AFTER),
                 ])->visible(! empty($this->table->getColumns())),
-                $this->getRelationManagersContentComponent(),
+                ...$this->getRelationManagersContentComponents(),
             ]);
     }
 

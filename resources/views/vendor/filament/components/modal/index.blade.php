@@ -1,243 +1,283 @@
-@php
-    use Filament\Support\Enums\Alignment;
-    use Filament\Support\Enums\Width;
-    use Filament\Support\Facades\FilamentView;
-    use Filament\Support\View\Components\ModalComponent\IconComponent;
-@endphp
-
 @props([
-    'alignment' => Alignment::Start,
+    'alignment' => 'start',
     'ariaLabelledby' => null,
-    'autofocus' => \Filament\Support\View\Components\ModalComponent::$isAutofocused,
-    'closeButton' => \Filament\Support\View\Components\ModalComponent::$hasCloseButton,
-    'closeByClickingAway' => \Filament\Support\View\Components\ModalComponent::$isClosedByClickingAway,
-    'closeByEscaping' => \Filament\Support\View\Components\ModalComponent::$isClosedByEscaping,
+    'closeButton' => \Filament\Support\View\Components\Modal::$hasCloseButton,
+    'closeByClickingAway' => \Filament\Support\View\Components\Modal::$isClosedByClickingAway,
     'closeEventName' => 'close-modal',
-    'closeQuietlyEventName' => 'close-modal-quietly',
-    'description' => null,
-    'extraModalWindowAttributeBag' => null,
+    'displayClasses' => 'inline-block',
     'footer' => null,
     'footerActions' => [],
-    'footerActionsAlignment' => Alignment::Start,
+    'footerActionsAlignment' => 'start',
     'header' => null,
     'heading' => null,
+    'hrComponent' => 'filament::hr',
     'icon' => null,
-    'iconAlias' => null,
     'iconColor' => 'primary',
     'id' => null,
     'openEventName' => 'open-modal',
     'slideOver' => false,
     'stickyFooter' => false,
-    'stickyHeader' => false,
+    'description' => null,
     'trigger' => null,
     'visible' => true,
     'width' => 'sm',
 ])
 
-@php
-    $hasContent = ! \Filament\Support\is_slot_empty($slot);
-    $hasDescription = filled($description);
-    $hasFooter = (! \Filament\Support\is_slot_empty($footer)) || (is_array($footerActions) && count($footerActions)) || (! is_array($footerActions) && (! \Filament\Support\is_slot_empty($footerActions)));
-    $hasHeading = filled($heading);
-    $hasIcon = filled($icon);
-
-    if (! $alignment instanceof Alignment) {
-        $alignment = filled($alignment) ? (Alignment::tryFrom($alignment) ?? $alignment) : null;
-    }
-
-    if (! $footerActionsAlignment instanceof Alignment) {
-        $footerActionsAlignment = filled($footerActionsAlignment) ? (Alignment::tryFrom($footerActionsAlignment) ?? $footerActionsAlignment) : null;
-    }
-
-    if (! $width instanceof Width) {
-        $width = filled($width) ? (Width::tryFrom($width) ?? $width) : null;
-    }
-
-    $closeEventHandler = filled($id) ? '$dispatch(' . \Illuminate\Support\Js::from($closeEventName) . ', { id: ' . \Illuminate\Support\Js::from($id) . ' })' : 'close()';
-@endphp
-
-@if ($trigger)
-    {!! '<div>' !!}
-    {{-- Avoid formatting issues with unclosed elements --}}
-
-    <div
-        @if (! $trigger->attributes->get('disabled'))
-            x-on:click="$el.nextElementSibling.dispatchEvent(new CustomEvent(@js($openEventName)))"
-        @endif
-        {{ $trigger->attributes->except(['disabled'])->class(['fi-modal-trigger']) }}
-    >
-        {{ $trigger }}
-    </div>
-@endif
-
 <div
+    x-data="{
+        isOpen: false,
+
+        livewire: null,
+
+        close: function () {
+            this.isOpen = false
+
+            this.$refs.modalContainer.dispatchEvent(
+                new CustomEvent('modal-closed', { id: '{{ $id }}' }),
+            )
+        },
+
+        open: function () {
+            this.isOpen = true
+
+            this.$refs.modalContainer.dispatchEvent(
+                new CustomEvent('modal-opened', { id: '{{ $id }}' }),
+            )
+        },
+    }"
+    x-trap.noscroll="isOpen"
+    @if ($id)
+        x-on:{{ $closeEventName }}.window="if ($event.detail.id === '{{ $id }}') close()"
+        x-on:{{ $openEventName }}.window="if ($event.detail.id === '{{ $id }}') open()"
+    @endif
     @if ($ariaLabelledby)
         aria-labelledby="{{ $ariaLabelledby }}"
     @elseif ($heading)
         aria-labelledby="{{ "{$id}.heading" }}"
     @endif
-    aria-modal="true"
-    id="{{ $id }}"
     role="dialog"
-    x-data="filamentModal({
-                id: @js($id),
-            })"
-    @if ($id)
-        x-on:{{ $closeEventName }}.window="if (($event.detail.id === @js($id)) && isOpen) close()"
-        x-on:{{ $closeQuietlyEventName }}.window="if (($event.detail.id === @js($id)) && isOpen) closeQuietly()"
-        x-on:{{ $openEventName }}.window="if (($event.detail.id === @js($id)) && (! isOpen)) open()"
-    @endif
-    x-on:{{ $closeEventName }}.stop="if (isOpen) close()"
-    x-on:{{ $closeQuietlyEventName }}.stop="if (isOpen) closeQuietly()"
-    x-on:{{ $openEventName }}.stop="if (! isOpen) open()"
-    x-bind:class="{
-        'fi-modal-open': isOpen,
-    }"
-    x-cloak
-    x-show="isOpen"
-    x-trap.noscroll{{ $autofocus ? '' : '.noautofocus' }}="isOpen"
-    {{
-        $attributes->class([
-            'fi-modal',
-            'fi-modal-slide-over' => $slideOver,
-            'fi-width-screen' => $width === Width::Screen,
-        ])
-    }}
+    aria-modal="true"
+    wire:ignore.self
+    class="filament-modal {{ $displayClasses }}"
 >
-    <div
-        aria-hidden="true"
-        x-show="isOpen"
-        x-transition.duration.300ms.opacity
-        class="fi-modal-close-overlay"
-    ></div>
+    {{ $trigger }}
 
     <div
-        @if ($closeByClickingAway)
-            {{-- Ensure that the click element is not triggered from a user selecting text inside an input. --}}
-            x-on:click.self="
-                document.activeElement.selectionStart === undefined &&
-                    document.activeElement.selectionEnd === undefined &&
-                    {{ $closeEventHandler }}
-            "
-        @endif
+        x-show="isOpen"
+        x-transition.duration.300ms.opacity
+        x-cloak
         @class([
-            'fi-modal-window-ctn',
-            'fi-clickable' => $closeByClickingAway,
+            'fixed inset-0 z-40 min-h-full overflow-y-auto overflow-x-hidden transition',
+            'flex items-center' => ! $slideOver,
         ])
     >
         <div
-            @if ($closeByEscaping)
-                x-on:keydown.window.escape="{{ $closeEventHandler }}"
+            @if ($closeByClickingAway)
+                @if (filled($id))
+                    x-on:click="$dispatch('{{ $closeEventName }}', { id: '{{ $id }}' })"
+                @else
+                    x-on:click="close()"
+                @endif
             @endif
-            x-show="isWindowVisible"
-            x-transition:enter="fi-transition-enter"
-            x-transition:leave="fi-transition-leave"
-            @if ($width !== Width::Screen)
-                x-transition:enter-start="fi-transition-enter-start"
-                x-transition:enter-end="fi-transition-enter-end"
-                x-transition:leave-start="fi-transition-leave-start"
-                x-transition:leave-end="fi-transition-leave-end"
-            @endif
+            aria-hidden="true"
+            @class([
+                'filament-modal-close-overlay fixed inset-0 h-full w-full bg-black/50',
+                'cursor-pointer' => $closeByClickingAway,
+            ])
+            style="will-change: transform"
+        ></div>
+
+        <div
+            x-ref="modalContainer"
+            x-cloak
             {{
-                ($extraModalWindowAttributeBag ?? new \Illuminate\View\ComponentAttributeBag)->class([
-                    'fi-modal-window',
-                    'fi-modal-window-has-close-button' => $closeButton,
-                    'fi-modal-window-has-content' => $hasContent,
-                    'fi-modal-window-has-footer' => $hasFooter,
-                    'fi-modal-window-has-icon' => $hasIcon,
-                    'fi-modal-window-has-sticky-header' => $stickyHeader,
-                    'fi-hidden' => ! $visible,
-                    ($alignment instanceof Alignment) ? "fi-align-{$alignment->value}" : null,
-                    ($width instanceof Width) ? "fi-width-{$width->value}" : (is_string($width) ? $width : null),
+                $attributes->class([
+                    'pointer-events-none relative w-full transition',
+                    'my-auto p-4' => ! $slideOver,
                 ])
             }}
         >
-            @if ($heading || $header)
+            <div
+                x-data="{ isShown: false }"
+                x-init="
+                    $nextTick(() => {
+                        isShown = isOpen
+                        $watch('isOpen', () => (isShown = isOpen))
+                    })
+                "
+                x-show="isShown"
+                x-cloak
+                @if (filled($id))
+                    x-on:keydown.window.escape="$dispatch('{{ $closeEventName }}', { id: '{{ $id }}' })"
+                @else
+                    x-on:keydown.window.escape="close()"
+                @endif
+                x-transition:enter="ease duration-300"
+                x-transition:leave="ease duration-300"
+                @if ($slideOver)
+                    x-transition:enter-start="translate-x-full rtl:-translate-x-full"
+                    x-transition:enter-end="translate-x-0"
+                    x-transition:leave-start="translate-x-0"
+                    x-transition:leave-end="translate-x-full rtl:-translate-x-full"
+                @elseif ($width !== 'screen')
+                    x-transition:enter-start="translate-y-8"
+                    x-transition:enter-end="translate-y-0"
+                    x-transition:leave-start="translate-y-0"
+                    x-transition:leave-end="translate-y-8"
+                @endif
+                @class([
+                    'filament-modal-window pointer-events-auto w-full cursor-default bg-white dark:bg-gray-800',
+                    'relative' => $width !== 'screen',
+                    'filament-modal-slide-over-window ms-auto h-screen overflow-y-auto' => $slideOver,
+                    'mx-auto rounded-xl' => ! ($slideOver || ($width === 'screen')),
+                    'hidden' => ! $visible,
+                    'max-w-xs' => $width === 'xs',
+                    'max-w-sm' => $width === 'sm',
+                    'max-w-md' => $width === 'md',
+                    'max-w-lg' => $width === 'lg',
+                    'max-w-xl' => $width === 'xl',
+                    'max-w-2xl' => $width === '2xl',
+                    'max-w-3xl' => $width === '3xl',
+                    'max-w-4xl' => $width === '4xl',
+                    'max-w-5xl' => $width === '5xl',
+                    'max-w-6xl' => $width === '6xl',
+                    'max-w-7xl' => $width === '7xl',
+                    'fixed inset-0' => $width === 'screen',
+                ])
+            >
                 <div
                     @class([
-                        'fi-modal-header',
-                        'fi-sticky' => $stickyHeader,
-                        'fi-vertical-align-center' => $hasIcon && $hasHeading && (! $hasDescription) && in_array($alignment, [Alignment::Start, Alignment::Left]),
+                        'relative flex h-full flex-col' => ($width === 'screen') || $slideOver,
                     ])
                 >
-                    @if ($closeButton)
-                        <x-filament::icon-button
-                            color="gray"
-                            :icon="\Filament\Support\Icons\Heroicon::OutlinedXMark"
-                            icon-alias="modal.close-button"
-                            icon-size="lg"
-                            :label="__('filament::components/modal.actions.close.label')"
-                            tabindex="-1"
-                            :x-on:click="$closeEventHandler"
-                            class="fi-modal-close-btn"
-                        />
-                    @endif
+                    @if ($heading || $header)
+                        <div
+                            @class([
+                                'filament-modal-header flex px-6 pt-6',
+                                'mb-6' => $slot->isEmpty(),
+                                match ($alignment) {
+                                    'left', 'start' => 'gap-x-5',
+                                    'center' => 'flex-col',
+                                },
+                            ])
+                        >
+                            @if ($header)
+                                {{ $header }}
+                            @else
+                                @if ($icon)
+                                    <div
+                                        @class([
+                                            'mb-5 flex items-center justify-center' => $alignment === 'center',
+                                        ])
+                                    >
+                                        <div
+                                            @class([
+                                                'rounded-full bg-custom-100 dark:bg-custom-500/20',
+                                                match ($alignment) {
+                                                    'left', 'start' => 'p-2',
+                                                    'center' => 'p-3',
+                                                },
+                                            ])
+                                            style="{{ \Filament\Support\get_color_css_variables($iconColor, shades: [100, 500]) }}"
+                                        >
+                                            <x-filament::icon
+                                                alias="filament::modal"
+                                                color="text-custom-600 dark:text-custom-400"
+                                                :name="$icon"
+                                                size="h-6 w-6"
+                                                :style="\Filament\Support\get_color_css_variables($iconColor, shades: [400, 600])"
+                                            />
+                                        </div>
+                                    </div>
+                                @endif
 
-                    @if ($header)
-                        {{ $header }}
-                    @else
-                        @if ($hasIcon)
-                            <div class="fi-modal-icon-ctn">
                                 <div
                                     @class([
-                                        'fi-modal-icon-bg',
-                                        ...\Filament\Support\get_component_color_classes(IconComponent::class, $iconColor),
+                                        'text-center' => $alignment === 'center',
                                     ])
                                 >
-                                    {{ \Filament\Support\generate_icon_html($icon, $iconAlias, size: \Filament\Support\Enums\IconSize::Large) }}
+                                    <x-filament::modal.heading>
+                                        {{ $heading }}
+                                    </x-filament::modal.heading>
+
+                                    @if ($description)
+                                        <p
+                                            class="filament-modal-description mt-2 text-sm text-gray-500 dark:text-gray-400"
+                                        >
+                                            {{ $description }}
+                                        </p>
+                                    @endif
                                 </div>
-                            </div>
-                        @endif
-
-                        <div>
-                            <h2 class="fi-modal-heading">
-                                {{ $heading }}
-                            </h2>
-
-                            @if ($hasDescription)
-                                <p class="fi-modal-description">
-                                    {{ $description }}
-                                </p>
                             @endif
                         </div>
                     @endif
-                </div>
-            @endif
 
-            @if ($hasContent)
-                <div class="fi-modal-content">
-                    {{ $slot }}
-                </div>
-            @endif
+                    @if ($closeButton)
+                        <div
+                            @class([
+                                'absolute',
+                                'end-6 top-6' => $slideOver,
+                                'end-4 top-4' => ! $slideOver,
+                            ])
+                        >
+                            <x-filament::icon-button
+                                color="gray"
+                                icon="heroicon-o-x-mark"
+                                icon-alias="support::modal.close-button"
+                                icon-size="lg"
+                                :label="__('filament-support::components/modal.actions.close.label')"
+                                tabindex="-1"
+                                :x-on:click="filled($id) ? '$dispatch(' . \Illuminate\Support\Js::from($closeEventName) . ', { id: ' . \Illuminate\Support\Js::from($id) . ' })' : 'close()'"
+                                class="filament-modal-close-button -m-2"
+                            />
+                        </div>
+                    @endif
 
-            @if ($hasFooter)
-                <div
-                    @class([
-                        'fi-modal-footer',
-                        'fi-sticky' => $stickyFooter,
-                        ($footerActionsAlignment instanceof Alignment) ? "fi-align-{$footerActionsAlignment->value}" : null,
-                    ])
-                >
-                    @if (! \Filament\Support\is_slot_empty($footer))
-                        {{ $footer }}
-                    @else
-                        <div class="fi-modal-footer-actions">
-                            @if (is_array($footerActions))
+                    @if ($slot->isNotEmpty())
+                        <div
+                            @class([
+                                'filament-modal-content flex flex-col gap-y-4 py-6',
+                                'flex-1' => ($width === 'screen') || $slideOver,
+                                'pe-6 ps-[5.25rem]' => $icon && ($alignment === 'start'),
+                                'px-6' => ! ($icon && ($alignment === 'start')),
+                            ])
+                        >
+                            {{ $slot }}
+                        </div>
+                    @endif
+
+                    <div
+                        @class([
+                            'filament-modal-footer w-full',
+                            'pe-6 ps-[5.25rem]' => $icon && ($alignment === 'start') && ($footerActionsAlignment !== 'center') && (! $stickyFooter),
+                            'px-6' => ! ($icon && ($alignment === 'start') && ($footerActionsAlignment !== 'center') && (! $stickyFooter)),
+                            'sticky bottom-0 rounded-b-xl border-t border-gray-200 bg-white py-5 dark:border-gray-700 dark:bg-gray-800' => $stickyFooter,
+                            'pb-6' => ! $stickyFooter,
+                            'mt-6' => (! $stickyFooter) && $slot->isEmpty() && (! $slideOver),
+                            'mt-auto' => $slideOver,
+                        ])
+                    >
+                        @if ($footer)
+                            {{ $footer }}
+                        @elseif (count($footerActions))
+                            <div
+                                @class([
+                                    'filament-modal-footer-actions gap-3',
+                                    match ($footerActionsAlignment) {
+                                        'center' => 'flex flex-col-reverse sm:grid sm:grid-cols-[repeat(auto-fit,minmax(0,1fr))]',
+                                        'end', 'right' => 'flex flex-row-reverse flex-wrap items-center',
+                                        'left', 'start' => 'flex flex-wrap items-center',
+                                    },
+                                ])
+                            >
                                 @foreach ($footerActions as $action)
                                     {{ $action }}
                                 @endforeach
-                            @else
-                                {{ $footerActions }}
-                            @endif
-                        </div>
-                    @endif
+                            </div>
+                        @endif
+                    </div>
                 </div>
-            @endif
+            </div>
         </div>
     </div>
 </div>
-
-@if ($trigger)
-    {!! '</div>' !!}
-    {{-- Avoid formatting issues with unclosed elements --}}
-@endif

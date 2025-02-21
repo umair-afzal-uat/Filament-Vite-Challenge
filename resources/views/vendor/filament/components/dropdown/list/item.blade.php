@@ -1,157 +1,181 @@
-@php
-    use Filament\Support\Enums\ActionSize;
-    use Filament\Support\Enums\IconSize;
-    use Filament\Support\View\Components\BadgeComponent;
-    use Filament\Support\View\Components\DropdownComponent\ItemComponent;
-    use Filament\Support\View\Components\DropdownComponent\ItemComponent\IconComponent;
-    use Illuminate\View\ComponentAttributeBag;
-@endphp
-
 @props([
-    'badge' => null,
-    'badgeColor' => 'primary',
-    'badgeTooltip' => null,
     'color' => 'gray',
+    'detail' => null,
     'disabled' => false,
-    'href' => null,
     'icon' => null,
-    'iconAlias' => null,
-    'iconColor' => null,
-    'iconSize' => null,
+    'iconSize' => 'md',
     'image' => null,
     'keyBindings' => null,
-    'loadingIndicator' => true,
-    'spaMode' => null,
     'tag' => 'button',
-    'target' => null,
-    'tooltip' => null,
 ])
 
 @php
-    if (filled($iconSize) && (! $iconSize instanceof IconSize)) {
-        $iconSize = IconSize::tryFrom($iconSize) ?? $iconSize;
-    }
-
-    $iconColor ??= $color;
-
-    $iconClasses = \Illuminate\Support\Arr::toCssClasses([
-        ...\Filament\Support\get_component_color_classes(IconComponent::class, $iconColor),
+    $buttonClasses = \Illuminate\Support\Arr::toCssClasses([
+        'filament-dropdown-list-item flex w-full items-center gap-2 whitespace-nowrap rounded-md p-2 text-sm transition-colors outline-none disabled:pointer-events-none disabled:opacity-70',
+        is_string($color) ? "filament-dropdown-list-item-color-{$color}" : null,
+        match ($color) {
+            'gray' => 'filament-dropdown-list-item-color-gray text-gray-700 hover:bg-gray-500/10 focus:bg-gray-500/10 dark:text-gray-200',
+            default => 'filament-dropdown-list-item-color-custom text-custom-600 hover:bg-custom-500/10 focus:bg-custom-500/10 dark:text-custom-400',
+        },
     ]);
 
-    $wireTarget = $loadingIndicator ? $attributes->whereStartsWith(['wire:target', 'wire:click'])->filter(fn ($value): bool => filled($value))->first() : null;
+    $buttonStyles = \Illuminate\Support\Arr::toCssStyles([
+        \Filament\Support\get_color_css_variables($color, shades: [400, 500, 600]) => $color !== 'gray',
+    ]);
+
+    $iconSize = match ($iconSize) {
+        'sm' => 'h-4 w-4',
+        'md' => 'h-5 w-5',
+        'lg' => 'h-6 w-6',
+        default => $iconSize,
+    };
+
+    $iconClasses = 'filament-dropdown-list-item-icon shrink-0';
+
+    $imageClasses = 'filament-dropdown-list-item-image h-5 w-5 shrink-0 rounded-full bg-gray-200 bg-cover bg-center dark:bg-gray-900';
+
+    $labelClasses = 'filament-dropdown-list-item-label w-full truncate text-start';
+
+    $detailClasses = 'filament-dropdown-list-item-detail ms-auto text-xs';
+
+    $wireTarget = $attributes->whereStartsWith(['wire:target', 'wire:click'])->first();
 
     $hasLoadingIndicator = filled($wireTarget);
 
     if ($hasLoadingIndicator) {
         $loadingIndicatorTarget = html_entity_decode($wireTarget, ENT_QUOTES);
     }
-
-    $hasTooltip = filled($tooltip);
 @endphp
 
-{!! ($tag === 'form') ? ('<form ' . $attributes->only(['action', 'class', 'method', 'wire:submit'])->toHtml() . '>') : '' !!}
-
-@if ($tag === 'form')
-    @csrf
-@endif
-
-<{{ ($tag === 'form') ? 'button' : $tag }}
-    @if (($tag === 'a') && (! ($disabled && $hasTooltip)))
-        {{ \Filament\Support\generate_href_html($href, $target === '_blank', $spaMode) }}
-    @endif
-    @if ($keyBindings)
-        x-bind:id="$id('key-bindings')"
-        x-mousetrap.global.{{ collect($keyBindings)->map(fn (string $keyBinding): string => str_replace('+', '-', $keyBinding))->implode('.') }}="document.getElementById($el.id).click()"
-    @endif
-    @if ($hasTooltip)
-        x-tooltip="{
-            content: @js($tooltip),
-            theme: $store.theme,
-        }"
-    @endif
-    {{
-        $attributes
-            ->when(
-                $tag === 'form',
-                fn (ComponentAttributeBag $attributes) => $attributes->except(['action', 'class', 'method', 'wire:submit']),
-            )
-            ->merge([
-                'aria-disabled' => $disabled ? 'true' : null,
-                'disabled' => $disabled && blank($tooltip),
-                'type' => match ($tag) {
-                    'button' => 'button',
-                    'form' => 'submit',
-                    default => null,
-                },
-                'wire:loading.attr' => $tag === 'button' ? 'disabled' : null,
-                'wire:target' => ($hasLoadingIndicator && $loadingIndicatorTarget) ? $loadingIndicatorTarget : null,
-            ], escape: false)
-            ->when(
-                $disabled && $hasTooltip,
-                fn (ComponentAttributeBag $attributes) => $attributes->filter(
-                    fn (mixed $value, string $key): bool => ! str($key)->startsWith(['href', 'x-on:', 'wire:click']),
-                ),
-            )
-            ->class([
-                'fi-dropdown-list-item',
-                'fi-disabled' => $disabled,
-            ])
-            ->color(ItemComponent::class, $color)
-    }}
->
-    @if ($icon)
+@if ($tag === 'button')
+    <button
+        @if ($keyBindings)
+            x-data="{}"
+            x-mousetrap.global.{{ collect($keyBindings)->map(fn (string $keyBinding): string => str_replace('+', '-', $keyBinding))->implode('.') }}
+        @endif
         {{
-            \Filament\Support\generate_icon_html($icon, $iconAlias, (new ComponentAttributeBag([
-                'wire:loading.remove.delay.' . config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator,
-                'wire:target' => $hasLoadingIndicator ? $loadingIndicatorTarget : false,
-            ]))->class([$iconClasses]), size: $iconSize)
+            $attributes
+                ->merge([
+                    'disabled' => $disabled,
+                    'type' => 'button',
+                    'wire:loading.attr' => 'disabled',
+                    'wire:target' => ($hasLoadingIndicator && $loadingIndicatorTarget) ? $loadingIndicatorTarget : null,
+                ], escape: false)
+                ->class([$buttonClasses])
+                ->style([$buttonStyles])
         }}
-    @endif
+    >
+        @if ($icon)
+            <x-filament::icon
+                :name="$icon"
+                alias="support::dropdown.list.item"
+                :size="$iconSize"
+                :class="$iconClasses"
+                :wire:loading.remove.delay="$hasLoadingIndicator"
+                :wire:target="$hasLoadingIndicator ? $loadingIndicatorTarget : null"
+            />
+        @endif
 
-    @if ($image)
-        <div
-            class="fi-dropdown-list-item-image"
-            style="background-image: url('{{ $image }}')"
-            @if ($hasLoadingIndicator)
-                wire:loading.remove.delay.{{ config('filament.livewire_loading_delay', 'default') }}
-                wire:target="{{ $loadingIndicatorTarget }}"
-            @endif
-        ></div>
-    @endif
+        @if ($image)
+            <div
+                class="{{ $imageClasses }}"
+                style="background-image: url('{{ $image }}')"
+            ></div>
+        @endif
 
-    @if ($hasLoadingIndicator)
-        {{
-            \Filament\Support\generate_loading_indicator_html((new ComponentAttributeBag([
-                'wire:loading.delay.' . config('filament.livewire_loading_delay', 'default') => '',
-                'wire:target' => $loadingIndicatorTarget,
-            ]))->class([$iconClasses]), size: $iconSize)
-        }}
-    @endif
+        @if ($hasLoadingIndicator)
+            <x-filament::loading-indicator
+                wire:loading.delay=""
+                :wire:target="$loadingIndicatorTarget"
+                :class="$iconClasses . ' ' . $iconSize"
+            />
+        @endif
 
-    <span class="fi-dropdown-list-item-label">
-        {{ $slot }}
-    </span>
+        <span class="{{ $labelClasses }}">
+            {{ $slot }}
+        </span>
 
-    @if (filled($badge))
-        @if ($badge instanceof \Illuminate\View\ComponentSlot)
-            {{ $badge }}
-        @else
-            <span
-                @if ($badgeTooltip)
-                    x-tooltip="{
-                        content: @js($badgeTooltip),
-                        theme: $store.theme,
-                    }"
-                @endif
-                @class([
-                    'fi-badge',
-                    ...\Filament\Support\get_component_color_classes(BadgeComponent::class, $badgeColor),
-                ])
-            >
-                {{ $badge }}
+        @if ($detail)
+            <span class="{{ $detailClasses }}">
+                {{ $detail }}
             </span>
         @endif
-    @endif
-</{{ ($tag === 'form') ? 'button' : $tag }}>
+    </button>
+@elseif ($tag === 'a')
+    <a
+        @if ($keyBindings)
+            x-data="{}"
+            x-mousetrap.global.{{ collect($keyBindings)->map(fn (string $keyBinding): string => str_replace('+', '-', $keyBinding))->implode('.') }}
+        @endif
+        {{
+            $attributes
+                ->class([$buttonClasses])
+                ->style([$buttonStyles])
+        }}
+    >
+        @if ($icon)
+            <x-filament::icon
+                :name="$icon"
+                alias="support::dropdown.list.item"
+                :size="$iconSize"
+                :class="$iconClasses"
+            />
+        @endif
 
-{!! ($tag === 'form') ? '</form>' : '' !!}
+        @if ($image)
+            <div
+                class="{{ $imageClasses }}"
+                style="background-image: url('{{ $image }}')"
+            ></div>
+        @endif
+
+        <span class="{{ $labelClasses }}">
+            {{ $slot }}
+        </span>
+
+        @if ($detail)
+            <span class="{{ $detailClasses }}">
+                {{ $detail }}
+            </span>
+        @endif
+    </a>
+@elseif ($tag === 'form')
+    <form
+        {{ $attributes->only(['action', 'class', 'method', 'wire:submit.prevent']) }}
+    >
+        @csrf
+
+        <button
+            @if ($keyBindings)
+                x-data="{}"
+                x-mousetrap.global.{{ collect($keyBindings)->map(fn (string $keyBinding): string => str_replace('+', '-', $keyBinding))->implode('.') }}
+            @endif
+            type="submit"
+            {{
+                $attributes
+                    ->except(['action', 'class', 'method', 'wire:submit.prevent'])
+                    ->class([$buttonClasses])
+                    ->style([$buttonStyles])
+            }}
+        >
+            @if ($icon)
+                <x-filament::icon
+                    :name="$icon"
+                    alias="support::dropdown.list.item"
+                    :size="$iconSize"
+                    :class="$iconClasses"
+                />
+            @endif
+
+            <span class="{{ $labelClasses }}">
+                {{ $slot }}
+            </span>
+
+            @if ($detail)
+                <span class="{{ $detailClasses }}">
+                    {{ $detail }}
+                </span>
+            @endif
+        </button>
+    </form>
+@endif

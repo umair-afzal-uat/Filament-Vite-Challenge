@@ -6,19 +6,20 @@ use Livewire\Drawer\Utils;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\ViewErrorBag;
 use Livewire\ComponentHook;
+use Illuminate\Support\MessageBag;
 
 class SupportValidation extends ComponentHook
 {
     function hydrate($memo)
     {
         $this->component->setErrorBag(
-            $memo['errors'] ?? []
+            $memo['errors'] ?? new MessageBag
         );
     }
 
     function render($view, $data)
     {
-        $errors = (new ViewErrorBag)->put('default', $this->component->getErrorBag());
+        $errors = (new ViewErrorBag)->put('default', $this->component->getErrorBag() ?? new MessageBag);
 
         $revert = Utils::shareWithViews('errors', $errors);
 
@@ -35,11 +36,13 @@ class SupportValidation extends ComponentHook
 
         // Only persist errors that were born from properties on the component
         // and not from custom validators (Validator::make) that were run.
-        $context->addMemo('errors', collect($errors)
-            ->filter(function ($value, $key) {
-                return Utils::hasProperty($this->component, $key);
-            })
-            ->toArray()
+        $context->addMemo(
+            'errors',
+            collect($errors)
+                ->filter(function ($value, $key) {
+                    return Utils::hasProperty($this->component, $key);
+                })
+                ->toArray()
         );
     }
 
